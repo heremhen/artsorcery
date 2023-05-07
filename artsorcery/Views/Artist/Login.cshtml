@@ -1,0 +1,24 @@
+﻿@model artsorcery.Models.Artist
+
+<h2>Login</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(a => a.Username)
+        @Html.TextBoxFor(a => a.Username, new { @class = "form-control" })
+        @Html.ValidationMessageFor(a => a.Username)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(a => a.Password)
+        @Html.PasswordFor(a => a.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(a => a.Password)
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Login" class="btn btn-primary" />
+    </div>
+}
