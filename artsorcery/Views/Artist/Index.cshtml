@@ -2,23 +2,13 @@
     ViewData["Title"] = "Home";
 }
 
-<h2>Welcome to the Artsorcery Application</h2>
-
-<p>Choose an option:</p>
-
-<div class="row">
-    <div class="col-md-6">
-        <h3>Login</h3>
-        <p>Already have an account? Login to access your profile.</p>
-        <p>
-            <a asp-controller="Artist" asp-action="Login" class="btn btn-primary">Login</a>
-        </p>
-    </div>
-    <div class="col-md-6">
-        <h3>Register</h3>
-        <p>Don't have an account yet? Register to create a new artist profile.</p>
-        <p>
-            <a asp-controller="Artist" asp-action="Register" class="btn btn-primary">Register</a>
-        </p>
+<div class="hero min-h-screen bg-base-200">
+    <div class="hero-content text-center">
+        <div class="max-w-md">
+            <h1 class="text-3xl font-bold">Welcome to the Artsorcery Application</h1>
+            <p class="py-6">Choose an option:</p>
+            <a class="btn btn-secondary px-6" asp-controller="Artist" asp-action="Login">Login</a>
+            <a class="btn btn-primary" asp-controller="Artist" asp-action="Register">Register</a>
+        </div>
     </div>
 </div>
