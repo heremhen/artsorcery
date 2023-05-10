@@ -12,6 +12,7 @@ namespace artsorcery.Models
         public DbSet<Artwork> Artworks { get; set; }
         public DbSet<ArtworkImage> ArtworkImages { get; set; }
         public DbSet<ArtworkLike> ArtworkLikes { get; set; }
+        public DbSet<TokenUserMapping> TokenUserMappings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -51,6 +52,9 @@ namespace artsorcery.Models
                 .WithMany()
                 .HasForeignKey(al => al.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TokenUserMapping>()
+                .HasKey(tum => tum.Token);
         }
     }
 }

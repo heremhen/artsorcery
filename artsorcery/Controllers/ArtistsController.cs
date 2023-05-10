@@ -1,9 +1,6 @@
 ﻿using artsorcery.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,14 +38,12 @@ namespace artsorcery.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Check if the username already exists
                 if (await _context.Artists.AnyAsync(a => a.Username == artist.Username))
                 {
                     ModelState.AddModelError("Username", "This username is already taken.");
                     return View(artist);
                 }
 
-                // Check if the email already exists
                 if (await _context.Artists.AnyAsync(a => a.Email == artist.Email))
                 {
                     ModelState.AddModelError("Email", "An account with this email already exists.");
@@ -81,6 +76,18 @@ namespace artsorcery.Controllers
             return View();
         }
 
+        private void SaveTokenForUser(string token, int userId)
+        {
+            var mapping = new TokenUserMapping
+            {
+                Token = token,
+                ArtistId = userId
+            };
+
+            _context.TokenUserMappings.Add(mapping);
+            _context.SaveChanges();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind("Username, Password")] Artist artist)
@@ -91,6 +98,9 @@ namespace artsorcery.Controllers
                 if (authenticatedArtist != null)
                 {
                     var token = Guid.NewGuid().ToString();
+
+                    SaveTokenForUser(token, authenticatedArtist.Id);
+
                     HttpContext.Response.Cookies.Append("AuthToken", token);
                     return RedirectToAction("Index", "Home");
                 }
@@ -98,6 +108,34 @@ namespace artsorcery.Controllers
             ModelState.AddModelError("", "Invalid username or password.");
             return View(artist);
         }
+
+        public IActionResult Profile()
+        {
+            var authToken = HttpContext.Request.Cookies["AuthToken"];
+            var mapping = _context.TokenUserMappings.FirstOrDefault(t => t.Token == authToken);
+
+            if (mapping == null)
+            {
+                return NotFound();
+            }
+
+            var artist = _context.Artists.Find(mapping.ArtistId);
+
+            if (artist == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new ArtistProfileViewModel
+            {
+                Username = artist.Username,
+                Email = artist.Email,
+                ProfilePicture = artist.ProfilePicture
+            };
+
+            return View(viewModel);
+        }
+
 
     }
 }

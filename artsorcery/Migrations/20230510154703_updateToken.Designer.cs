@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using artsorcery.Models;
 
@@ -11,9 +12,11 @@ using artsorcery.Models;
 namespace artsorcery.Migrations
 {
     [DbContext(typeof(MyllodiaContext))]
-    partial class MyllodiaContextModelSnapshot : ModelSnapshot
+    [Migration("20230510154703_updateToken")]
+    partial class updateToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

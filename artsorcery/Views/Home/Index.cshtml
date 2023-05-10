@@ -4,13 +4,27 @@
 
 <div class="hero min-h-screen bg-base-200">
     <div class="hero-content text-center">
-        <figure class="relative max-w-sm transition-all duration-300 cursor-pointer filter grayscale hover:grayscale-0">
-            <a href="#">
-                <img class="rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/content-gallery-3.png" alt="image description">
-            </a>
-            <figcaption class="absolute px-4 text-lg text-white bottom-6">
-                <p>Do you want to get notified when a new component is added to Flowbite?</p>
-            </figcaption>
-        </figure>
+        @foreach (var artwork in ViewBag.Artworks)
+        {
+            <figure class="relative max-w-sm transition-all duration-300 cursor-pointer filter grayscale hover:grayscale-0">
+                <a href="@Url.Action("Details", "Artwork", new { id = artwork.Id })">
+                    <img class="rounded-lg object-cover h-72 w-full" src="/public/@GetFirstImagePath(artwork)" alt="Artwork Image">
+                </a>
+                <figcaption class="absolute px-4 text-lg text-white bottom-6">
+                    <p>@artwork.Title</p>
+                </figcaption>
+            </figure>
+        }
     </div>
 </div>
+
+@functions {
+    public string GetFirstImagePath(Artwork artwork)
+    {
+        if (artwork.ArtworkImages != null && artwork.ArtworkImages.Count > 0)
+        {
+            return artwork.ArtworkImages.First().ImagePath;
+        }
+        return string.Empty;
+    }
+}

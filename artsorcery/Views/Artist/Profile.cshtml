@@ -1,0 +1,29 @@
+﻿@model ArtistProfileViewModel
+
+<section class="bg-base-200 flex font-medium items-center justify-center h-screen">
+
+    <section class="w-64 mx-auto bg-base-100 rounded-2xl px-8 py-6 shadow-lg">
+        <div class="flex items-center justify-between">
+            <span class="text-accent text-sm">Artist Profile</span>
+        </div>
+        <div class="mt-6 w-fit mx-auto">
+            @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+            {
+                <img src="@Model.ProfilePicture" alt="Profile Picture" class="rounded-full w-28">
+            }
+            else
+            {
+            <img class="rounded-full w-28" src="/public/image/daisy.jpg" alt="Sunset in the mountains">
+            }
+        </div>
+
+        <div class="mt-8 ">
+            <h2 class="text-content font-bold text-2xl tracking-wide">@Model.Username</h2>
+        </div>
+        <p class="text-primary font-semibold mt-2.5">
+            @Model.Email
+        </p>
+    </section>
+
+
+</section>
