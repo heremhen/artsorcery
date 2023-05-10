@@ -136,6 +136,27 @@ namespace artsorcery.Controllers
             return View(viewModel);
         }
 
+        //public IActionResult Profile(int id)
+        //{
+        //    var artist = _context.Artists.Find(id);
+
+        //    if (artist == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var viewModel = new ArtistProfileViewModel
+        //    {
+        //        Id = artist.Id,
+        //        Username = artist.Username,
+        //        Email = artist.Email,
+        //        ProfilePicture = artist.ProfilePicture
+        //    };
+
+        //    ViewBag.ArtistId = viewModel.Id;
+
+        //    return View(viewModel);
+        //}
 
     }
 }
