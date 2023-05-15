@@ -15,12 +15,12 @@
             @Html.AntiForgeryToken()
             <div class="grid grid-cols-1 space-y-2">
                 @Html.LabelFor(m => m.Title, new { @class = "text-sm font-bold text-gray-500 tracking-wide" })
-                @Html.TextBoxFor(m => m.Title, new { @class = "text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" })
+                @Html.TextBoxFor(m => m.Title, new { @class = "text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 bg-slate-200 text-black" })
                 @Html.ValidationMessageFor(m => m.Title)
             </div>
             <div class="grid grid-cols-1 space-y-2">
                 @Html.LabelFor(m => m.Description, new { @class = "text-sm font-bold text-gray-500 tracking-wide" })
-                @Html.TextBoxFor(m => m.Description, new { @class = "text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" })
+                @Html.TextBoxFor(m => m.Description, new { @class = "text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 bg-slate-200 text-black" })
                 @Html.ValidationMessageFor(m => m.Description)
             </div>
             <div class="grid grid-cols-1 space-y-2">

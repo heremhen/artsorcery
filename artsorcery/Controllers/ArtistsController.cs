@@ -126,11 +126,14 @@ namespace artsorcery.Controllers
                 return NotFound();
             }
 
+            var artworks = _context.Artworks.Where(a => a.ArtistId == artist.Id).ToList();
+
             var viewModel = new ArtistProfileViewModel
             {
                 Username = artist.Username,
                 Email = artist.Email,
-                ProfilePicture = artist.ProfilePicture
+                ProfilePicture = artist?.ProfilePicture,
+                Artworks = artworks
             };
 
             return View(viewModel);
@@ -158,5 +161,68 @@ namespace artsorcery.Controllers
         //    return View(viewModel);
         //}
 
+        public IActionResult Settings()
+        {
+            var authToken = HttpContext.Request.Cookies["AuthToken"];
+            var mapping = _context.TokenUserMappings.FirstOrDefault(t => t.Token == authToken);
+
+            if (mapping != null)
+            {
+                var artist = _context.Artists.Find(mapping.ArtistId);
+                if (artist != null)
+                {
+                    return View(artist);
+                }
+            }
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Settings(Artist artist, IFormFile profilePicture)
+        {
+            var authToken = HttpContext.Request.Cookies["AuthToken"];
+            var mapping = _context.TokenUserMappings.FirstOrDefault(t => t.Token == authToken);
+
+            if (mapping != null)
+            {
+                var existingArtist = await _context.Artists.FindAsync(mapping.ArtistId);
+                if (existingArtist != null)
+                {
+                    // Update the artist fields based on the submitted values
+                    existingArtist.Username = artist.Username;
+                    existingArtist.Email = artist.Email;
+
+                    // Check if a new password was provided and update it accordingly
+                    if (!string.IsNullOrEmpty(artist.Password))
+                    {
+                        existingArtist.Password = artist.Password;
+                    }
+
+                    // Process the profile picture if it is uploaded
+                    if (profilePicture != null && profilePicture.Length > 0)
+                    {
+                        // Generate a unique filename for the profile picture
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(profilePicture.FileName);
+                        var imagePath = Path.Combine("wwwroot", "public", "images", fileName);
+
+                        // Save the uploaded profile picture to the specified location
+                        using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                        {
+                            await profilePicture.CopyToAsync(fileStream);
+                        }
+
+                        // Update the artist's profile picture path
+                        existingArtist.ProfilePicture = "/public/images/" + fileName;
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Profile", new { id = existingArtist.Id });
+                }
+            }
+
+            // If the mapping or artist is not found, handle accordingly
+            return NotFound();
+        }
     }
 }

@@ -1,0 +1,42 @@
+﻿@model Artwork
+
+<div class="flex items-center justify-center bg-base-200">
+    <div class="z-20 min-h-screen flex-col overflow-hidden p-4 text-2xl">
+        <!-- component -->
+        <section class="mx-auto mt-20 max-w-4xl rounded-md border bg-base-100 p-6 shadow-md">
+            <h2 class="text-lg font-semibold capitalize text-base-content">
+                Edit Artwork
+            </h2>
+
+            <form method="post" action="@Url.Action("Edit", "Artwork")">
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div class="form-control w-full max-w-xs col-span-2">
+                        <label class="label">
+                            <span class="label-text text-base">Title</span>
+                        </label>
+                        <input type="text"
+                               placeholder="Type here"
+                               class="input-bordered input w-full max-w-xs"
+                               id="title" name="Title" value="@Model.Title" />
+                    </div>
+                    <div class="form-control w-full max-w-xs col-span-2">
+                        <label class="label">
+                            <span class="label-text text-base">Description</span>
+                        </label>
+                        <textarea placeholder="Description" class="textarea textarea-bordered textarea-md w-full max-w-xs"
+                                  id="description" name="Description">@Model.Description</textarea>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button class="btn gap-2" type="submit">
+                        Save
+                        <i class="pi pi-save"></i>
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>

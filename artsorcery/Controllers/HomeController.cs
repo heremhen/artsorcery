@@ -16,16 +16,38 @@ namespace artsorcery.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    ViewData["Title"] = "Home Page";
+        //    var last10Artworks = _context.Artworks
+        //        .OrderByDescending(a => a.CreatedAt)
+        //        .Include(a => a.ArtworkImages)
+        //        .Take(10)
+        //        .ToList();
+
+        //    ViewBag.Artworks = last10Artworks;
+
+        //    return View();
+        //}
+
+        public IActionResult Index(int page = 1)
         {
             ViewData["Title"] = "Home Page";
-            var last10Artworks = _context.Artworks
+            int pageSize = 10;
+
+            var artworksCount = _context.Artworks.Count();
+            var totalPages = (int)Math.Ceiling((double)artworksCount / pageSize);
+
+            var artworks = _context.Artworks
                 .OrderByDescending(a => a.CreatedAt)
                 .Include(a => a.ArtworkImages)
-                .Take(10)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
 
-            ViewBag.Artworks = last10Artworks;
+            ViewBag.Artworks = artworks;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
 
             return View();
         }

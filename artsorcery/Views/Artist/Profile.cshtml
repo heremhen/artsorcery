@@ -1,11 +1,8 @@
 ﻿@model ArtistProfileViewModel
 
 <section class="bg-base-200 flex font-medium items-center justify-center h-screen">
-
     <section class="w-64 mx-auto bg-base-100 rounded-2xl px-8 py-6 shadow-lg">
-        <div class="flex items-center justify-between">
-            <span class="text-accent text-sm">Artist Profile</span>
-        </div>
+        <!-- Profile Picture -->
         <div class="mt-6 w-fit mx-auto">
             @if (!string.IsNullOrEmpty(Model.ProfilePicture))
             {
@@ -13,17 +10,43 @@
             }
             else
             {
-            <img class="rounded-full w-28" src="/public/image/daisy.jpg" alt="Sunset in the mountains">
+                <img class="rounded-full w-28" src="/public/image/daisy.jpg" alt="Sunset in the mountains">
             }
         </div>
 
-        <div class="mt-8 ">
+        <!-- Username and Email -->
+        <div class="mt-8">
             <h2 class="text-content font-bold text-2xl tracking-wide">@Model.Username</h2>
         </div>
         <p class="text-primary font-semibold mt-2.5">
             @Model.Email
         </p>
     </section>
-
-
 </section>
+
+<!-- Artworks -->
+<h2 class="text-content font-bold text-5xl text-center py-5 bg-base-200">Artworks</h2>
+<div class="container justify-center bg-base-200">
+    <div class="overflow-x-auto">
+        <table class="table table-compact w-full">
+            <thead>
+                <tr class="text-center">
+                    <th class="px-4 py-2">Title</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var artwork in Model.Artworks)
+                {
+                    <tr class="text-center hover">
+                        <td>@artwork.Title</td>
+                        <td>
+                            <a href="@Url.Action("Edit", "Artwork", new { id = artwork.Id })" class="btn btn-outline btn-info">Edit</a>
+                            <a href="@Url.Action("Delete", "Artwork", new { id = artwork.Id })" class="btn btn-outline btn-error">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

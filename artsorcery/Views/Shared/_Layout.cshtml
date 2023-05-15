@@ -1,6 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.EntityFrameworkCore
+
+@inject MyllodiaContext _context
 @{
     var httpContext = ViewContext.HttpContext;
+    var AuthToken = httpContext.Request.Cookies["AuthToken"];
+    var tokenMapping = _context.TokenUserMappings.FirstOrDefault(t => t.Token == AuthToken);
+    var artist = tokenMapping != null ? _context.Artists.FirstOrDefault(a => a.Id == tokenMapping.ArtistId) : null;
+    var profilePictureUrl = artist?.ProfilePicture;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +20,7 @@
     <link rel="stylesheet" href="~/artsorcery.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
 </head>
-<body data-theme="light">
+<body data-theme="dracula">
     <header>
         <div class="navbar bg-base-100">
             <div class="navbar-start">
@@ -40,9 +47,12 @@
             </div>
             <div class="navbar-end flex-none gap-2">
                 <div class="form-control">
-                    <input type="text" placeholder="Search" class="input input-bordered" />
+                    <form method="get" action="@Url.Action("Search", "Artwork")">
+                        <input type="text" placeholder="Search" name="searchQuery" class="input input-bordered" />
+                        <button type="submit" class="hidden">Search</button>
+                    </form>
                 </div>
-                @if (!httpContext.Request.Cookies.TryGetValue("AuthToken", out string authToken))
+                @if (string.IsNullOrEmpty(AuthToken))
                 {
                     <a class="btn" asp-area="" asp-controller="Artist" asp-action="Index">Get started</a>
                 }
@@ -56,7 +66,7 @@
                     <div class="dropdown dropdown-end">
                         <label tabindex="0" class="btn btn-ghost btn-circle avatar">
                             <div class="w-10 rounded-full">
-                                <img src="~/public/image/daisy.jpg" />
+                                <img src="@profilePictureUrl" />
                             </div>
                         </label>
                         <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
@@ -66,7 +76,7 @@
                                     <span class="badge">New</span>
                                 </a>
                             </li>
-                            <li><a>Settings</a></li>
+                            <li><a asp-controller="Artist" asp-action="Settings">Settings</a></li>
                             <li><a onclick="logout()">Logout</a></li>
                         </ul>
                     </div>
@@ -92,7 +102,7 @@
     <script>
         function logout() {
             document.cookie = "AuthToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            location.reload();
+            window.location.href = "/";
         }
     </script>
 </body>

@@ -63,6 +63,37 @@ namespace artsorcery.Controllers
             return -1;
         }
 
+        public IActionResult Search(string searchQuery, int page = 1)
+        {
+            ViewData["Title"] = "Search Results";
+
+            // Retrieve the artworks matching the search query
+            var searchResults = _context.Artworks
+                .Where(a => a.Title.Contains(searchQuery))
+                .Include(a => a.ArtworkImages)
+                .ToList();
+
+            // Calculate pagination values
+            int pageSize = 10;
+            int skipAmount = (page - 1) * pageSize;
+            int totalArtworks = searchResults.Count();
+            int totalPages = (int)Math.Ceiling((double)totalArtworks / pageSize);
+
+            // Retrieve the artworks for the current page
+            var artworks = searchResults
+                .Skip(skipAmount)
+                .Take(pageSize)
+                .ToList();
+
+            // Pass the data to the view
+            ViewBag.SearchQuery = searchQuery;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Artworks = artworks;
+
+            return View();
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -123,5 +154,70 @@ namespace artsorcery.Controllers
 
             return View(artwork);
         }
+
+        public IActionResult Edit(int id)
+        {
+            var artwork = _context.Artworks.Find(id);
+
+            if (artwork == null)
+            {
+                return NotFound();
+            }
+
+            return View(artwork);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Artwork artwork)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(artwork);
+            //}
+
+            var existingArtwork = _context.Artworks.Find(artwork.Id);
+
+            if (existingArtwork == null)
+            {
+                return NotFound();
+            }
+
+            existingArtwork.Title = artwork.Title;
+            existingArtwork.Description = artwork.Description;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Profile", "Artist");
+        }
+
+
+        public IActionResult Delete(int id)
+        {
+            var artwork = _context.Artworks.Find(id);
+
+            if (artwork == null)
+            {
+                return NotFound();
+            }
+
+            return View(artwork);
+        }
+
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var artwork = _context.Artworks.Find(id);
+
+            if (artwork == null)
+            {
+                return NotFound();
+            }
+
+            _context.Artworks.Remove(artwork);
+            _context.SaveChanges();
+
+            return RedirectToAction("Profile", "Artist");
+        }
+
     }
 }
