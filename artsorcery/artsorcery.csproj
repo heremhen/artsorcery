@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\lib\tailwind\" />
+		<Folder Include="wwwroot\public\images\" />
 		<Folder Include="wwwroot\public\image\" />
 	</ItemGroup>
 
